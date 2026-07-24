@@ -38,10 +38,33 @@ class Ciudad:
       self.nombre = nombre
       self.latitud = latitud
       self.longitud = longitud
-      self.clima = 
+      self.clima = none
+
 
     def __str__(self):
         if self.clima:
-              return f"{self.nombre} - {self.clima}"
+            return f"{self.nombre} - {self.clima}"
         else:
-              return f"{slef.nombre} - 
+            return f"{self.nombre} - Clima no disponible"
+
+    def consultar_clima(self):
+        print(f"Consultando el clima de {self.nombre}...")
+        
+        url = f"https://api.open-meteo.com/v1/forecast?latitude={self.latitud}&longitude={self.longitud}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code"
+        
+        try:
+            respuesta = requests.get(url, timeout=10)
+           
+            respuesta.raise_for_status() 
+            
+            datos = respuesta.json()
+
+                  if "current" in datos:
+                temp = datos["current"]["temperature_2m"]
+                hum = datos["current"]["relative_humidity_2m"]
+                viento = datos["current"]["wind_speed_10m"]
+                codigo = datos["current"]["weather_code"]
+
+                self.clima = RegistroClimatico(temp, hum, viento, codigo)
+            else:
+                print(f"Los datos recibidos para {self.nombre} no tienen el formato esperado.")
