@@ -1,69 +1,50 @@
-import json 
-import request
-class Ciudad:
-    def __init__(self, nombre, latitud, longitud): 
-        self.nombre = nombre 
-        self.latitud = latitud 
-        self.longitud = longitud 
-        
-    def __str__(self):
-        return f"{self.nombre}({self.latitud},{self.longitud})"
+import json
+from datos import Municipio, Localidad
 
-with open("areas.json", "r") as archivo:
-    datos = json.load(archivo)
-    print("Estructuras de las áreas, cargadas con éxito")
+def cargar_datos_desde_json(ruta_archivos):
+    """Lee el archivo JSON y convierte los datos en una estructura de objetos en memoria."""
+    municipios_lista = []
 
-ciudades = []
-for c in datos["ciudades"]:
-    ciudad_obj = Ciudad(c["nombre"], c["latitud"], c["longitud"])
-    ciudades.append(ciudad_obj)
-    print(f"Área registrada: {ciudad_obj}")
+    with open(ruta_archivos, "r", encoding="utf-8") as archivo:
+        datos_json = json.load(archivo)
 
-print(f"\nTotal de ciudades cargadas: {len(ciudades)}")
+        for mun_data in (datos_json.get("municipios") or []):
+            municipios_obj = Municipio(mun_data["nombre"])
 
+            for loc_data in (mun_data.get("localidades") or []):
+                localidades_obj = Localidad(
+                    nombre=loc_data["nombre"],
+                    latitud=loc_data["latitud"],
+                    longitud=loc_data["longitud"],
+                    municipio_nombre=municipios_obj.nombre
+                )
+                municipios_obj.agregar_localidades(localidades_obj)
 
-class RegistroClimatico:
-    def __init__(self, temperatura, humedad, viento, codigo_wmo)
-        self.temperatura = temperatura
-        self.humedad = humedad
-        self.viento = viento
-        Self.codigo_wmo = codigo_wmo
+            municipios_lista.append(municipios_obj)
 
-    def __str__(self):
-        return f"{self.temperatura}°C, Humedad: {self.humedad}%, Viento: {self.viento} km/h (Código WMO: {self.codigo_wmo})"
+    return municipios_lista
 
+if __name__ == "__main__":
+    print("==========================================")
+    print("      Sistema Meteocaracas - Fase de Carga")
+    print("==========================================\n")
 
-class Ciudad:
-    def__init__(self, nombre, latitud, longitud):
-      self.nombre = nombre
-      self.latitud = latitud
-      self.longitud = longitud
-      self.clima = none
+    lista_municipios = cargar_datos_desde_json("areas.json")
+    print("Estructura de áreas cargada exitosamente en objetos.\n")
 
+    todas_las_localidades = []
+    for mun in lista_municipios:
+        todas_las_localidades.extend(mun.localidades)
 
-    def __str__(self):
-        if self.clima:
-            return f"{self.nombre} - {self.clima}"
-        else:
-            return f"{self.nombre} - Clima no disponible"
+    print("=== Reporte inicial de localidades ===")
+    print("--------------------------------------")
+    for loc in todas_las_localidades:
+        print(loc)
+    print("--------------------------------------\n")
 
-    def consultar_clima(self):
-        print(f"Consultando el clima de {self.nombre}...")
-        
-        url = f"https://api.open-meteo.com/v1/forecast?latitude={self.latitud}&longitude={self.longitud}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code"
-        
-        try:
-            respuesta = requests.get(url, timeout=10)
-           
-            respuesta.raise_for_status() 
-            
-            datos = respuesta.json()
-
-                  if "current" in datos:
-                temp = datos["current"]["temperature_2m"]
-                hum = datos["current"]["relative_humidity_2m"]
-                viento = datos["current"]["wind_speed_10m"]
-                codigo = datos["current"]["weather_code"]
-
-                self.clima = RegistroClimatico(temp, hum, viento, codigo)
-           
+    print("=== Consultando clima en tiempo real para zonas disponibles ===")
+    for loc in todas_las_localidades:
+        if loc.tiene_coordenadas():
+            print(f"\nConsultando API para {loc.nombre}...")
+            if loc.consultar_clima():
+                print(f"¡Éxito! -> {loc}")
