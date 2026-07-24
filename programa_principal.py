@@ -66,5 +66,4 @@ class Ciudad:
                 codigo = datos["current"]["weather_code"]
 
                 self.clima = RegistroClimatico(temp, hum, viento, codigo)
-            else:
-                print(f"Los datos recibidos para {self.nombre} no tienen el formato esperado.")
+           
