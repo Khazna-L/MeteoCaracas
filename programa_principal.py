@@ -26,7 +26,7 @@ def cargar_datos_desde_json(ruta_archivos):
 
 if __name__ == "__main__":
     print("==========================================")
-    print("      Sistema Meteocaracas - Fase de Carga")
+    print("   Sistema Meteocaracas - Fase de Carga"   )
     print("==========================================\n")
 
     lista_municipios = cargar_datos_desde_json("areas.json")
@@ -48,3 +48,44 @@ if __name__ == "__main__":
             print(f"\nConsultando API para {loc.nombre}...")
             if loc.consultar_clima():
                 print(f"¡Éxito! -> {loc}")
+
+def menu_principal():
+    """ Despliega las opciones del equipo en la pantalla de comandos."""
+    print("\n" + "="*45)
+    print(" Sistema MeteoCaracas - Menú principal")
+    print("="*45)
+    print("1. Consultar clima de tu municipio")
+    print("2. Buscar el tiempo por localidad")
+    print("3. Ver regristo por nombre directo")
+    print("4. Consulta historica de datos")
+    print("0. Salir del sistema")
+    print("="*45)
+
+if __name__ == "__main__":
+    lista_municipios = cargar_datos_desde_json("areas.json")
+    print("Sistema MeteoCaracas iniciado con éxito")
+
+    while True:
+        menu_principal()
+        opcion = input("Seleccione una opción: ").strip()
+
+        if opcion == "1":
+            print("\n [Ruta 1: Navegación - En construcción....]")
+        elif opcion == "2":
+            print("\n [Ruta 2: Búsqueda directa - En construcción....]")
+        elif opcion == "3":
+            print("\n [Ruta: Unidad de estadística - En construcción....]")
+        elif opcion == "4":
+            print("\n [Ruta 4: Unidad histórico - En construcción....]")
+        elif opcion == "0":
+            print("\n ¡Gracias por consultar MeteoCaracas! Nos vemos en el próximo reporte.")
+            break
+        else:
+            print("\n Opción no válida. Por favor, introduzca un número del 0 al 4.")
+
+
+            
+
+
+
+
