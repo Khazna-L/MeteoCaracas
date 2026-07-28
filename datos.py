@@ -1,7 +1,7 @@
 import requests
 
 class RegistroClimatico:
-    """Refleja los datos del clima al isntante sobre una zona."""
+    """Refleja los datos del clima al instante sobre una zona."""
     def __init__(self, temperatura, humedad, viento, codigo_wmo):
         self.temperatura = temperatura
         self.humedad = humedad
@@ -79,7 +79,7 @@ class Municipio:
           self.nombre = nombre 
           self.localidades = []
 
-     def agregar_localidades(self, localidad):
+     def agregar_localidad(self, localidad):
          """Incorpora una localidad dentro de la lista municipal."""
          self.localidades.append(localidad)
 

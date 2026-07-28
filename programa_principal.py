@@ -18,36 +18,11 @@ def cargar_datos_desde_json(ruta_archivos):
                     longitud=loc_data["longitud"],
                     municipio_nombre=municipios_obj.nombre
                 )
-                municipios_obj.agregar_localidades(localidades_obj)
+                municipios_obj.agregar_localidad(localidades_obj)
 
             municipios_lista.append(municipios_obj)
 
     return municipios_lista
-
-if __name__ == "__main__":
-    print("==========================================")
-    print("   Sistema Meteocaracas - Fase de Carga"   )
-    print("==========================================\n")
-
-    lista_municipios = cargar_datos_desde_json("areas.json")
-    print("Estructura de áreas cargada exitosamente en objetos.\n")
-
-    todas_las_localidades = []
-    for mun in lista_municipios:
-        todas_las_localidades.extend(mun.localidades)
-
-    print("=== Reporte inicial de localidades ===")
-    print("--------------------------------------")
-    for loc in todas_las_localidades:
-        print(loc)
-    print("--------------------------------------\n")
-
-    print("=== Consultando clima en tiempo real para zonas disponibles ===")
-    for loc in todas_las_localidades:
-        if loc.tiene_coordenadas():
-            print(f"\nConsultando API para {loc.nombre}...")
-            if loc.consultar_clima():
-                print(f"¡Éxito! -> {loc}")
 
 def menu_principal():
     """ Despliega las opciones del equipo en la pantalla de comandos."""
@@ -61,6 +36,65 @@ def menu_principal():
     print("0. Salir del sistema")
     print("="*45)
 
+def ejecutar_navegacion(lista_municipios):
+    """Facilita la consulta del clima por municipio y localidad."""
+    if not lista_municipios:
+            print("\n no hay municipios cargados en el sistema.")
+            return
+
+    print("\n" + "="*45)
+    print(" Navegación de municipios ")
+    print("="*45)
+
+    for idx, mun in enumerate(lista_municipios, start=1):
+        print(f"{idx}. {mun.nombre}")
+    print("0. Regresar al menú prinicipal")
+
+    opcion_mun = input("\n Seleccione un municipio: ").strip()
+
+    if opcion_mun == "0":
+        return
+
+    if not opcion_mun.isdigit() or not (1 <= int(opcion_mun) <= len(lista_municipios)):
+        print("\n Selección invalida. Ingrese un número dentro del rango.")
+        return 
+
+    municipio_sel = lista_municipios[int(opcion_mun) - 1]
+
+    print(f"\n ---- Localidades en {municipio_sel.nombre} ----")
+    if not municipio_sel.localidades:
+        print("No hay localidades registradas para este municipio.")
+        return 
+
+    for idx, loc in enumerate(municipio_sel.localidades, start=1):
+        print(f"{idx}. {loc.nombre}")
+    print("0. Regresar")
+
+    opcion_loc = input("\n Seleccione una localidad: ").strip()
+
+    if opcion_loc == "0":
+        return 
+
+    if not opcion_loc.isdigit() or not (1 <= int(opcion_loc) <= len(municipio_sel.localidades)):
+        print("\n Selección inválida. Ingrese un número dentro del rango.")
+        return 
+
+    localidad_sel = municipio_sel.localidades[int(opcion_loc) - 1]
+
+    print(f"\n Consultando información meteorológica para '{localidad_sel.nombre}'.....")
+
+    if not localidad_sel.tiene_coordenadas():
+        print(f"\n La localidad '{localidad_sel.nombre}' no tiene coordenadas resgristradas en el sistema.")
+        return 
+
+    if localidad_sel.consultar_clima(): 
+        print("\n" + "-"*45)
+        print("====Reporte del clima en tiempo real====")
+        print(localidad_sel)
+        print("-"*45)
+    else:
+        print("\n Error al conectar con Open-Meto. Verificar su conexion.")
+
 if __name__ == "__main__":
     lista_municipios = cargar_datos_desde_json("areas.json")
     print("Sistema MeteoCaracas iniciado con éxito")
@@ -70,7 +104,7 @@ if __name__ == "__main__":
         opcion = input("Seleccione una opción: ").strip()
 
         if opcion == "1":
-            print("\n [Ruta 1: Navegación - En construcción....]")
+            ejecutar_navegacion(lista_municipios)
         elif opcion == "2":
             print("\n [Ruta 2: Búsqueda directa - En construcción....]")
         elif opcion == "3":
@@ -82,10 +116,3 @@ if __name__ == "__main__":
             break
         else:
             print("\n Opción no válida. Por favor, introduzca un número del 0 al 4.")
-
-
-            
-
-
-
-
