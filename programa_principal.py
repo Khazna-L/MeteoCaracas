@@ -27,13 +27,13 @@ def cargar_datos_desde_json(ruta_archivos):
 def menu_principal():
     """ Despliega las opciones del equipo en la pantalla de comandos."""
     print("\n" + "="*45)
-    print(" Sistema MeteoCaracas - Menú principal")
+    print("    Sistema MeteoCaracas - Menú principal")
     print("="*45)
-    print("1. Consultar clima de tu municipio")
-    print("2. Buscar el tiempo por localidad")
-    print("3. Ver regristo por nombre directo")
-    print("4. Consulta historica de datos")
-    print("0. Salir del sistema")
+    print("1. Consultar clima por Municipio o Localidad.")
+    print("2. Buscar clima por nombre directo.")
+    print("3. Módulo de estadísticas y reportes.")
+    print("4. Consulta histórica de datos.")
+    print("0. Salir del sistema.")
     print("="*45)
 
 def ejecutar_navegacion(lista_municipios):
@@ -84,7 +84,7 @@ def ejecutar_navegacion(lista_municipios):
     print(f"\n Consultando información meteorológica para '{localidad_sel.nombre}'.....")
 
     if not localidad_sel.tiene_coordenadas():
-        print(f"\n La localidad '{localidad_sel.nombre}' no tiene coordenadas resgristradas en el sistema.")
+        print(f"\n La localidad '{localidad_sel.nombre}' no tiene coordenadas registradas en el sistema.")
         return 
 
     if localidad_sel.consultar_clima(): 
@@ -93,7 +93,58 @@ def ejecutar_navegacion(lista_municipios):
         print(localidad_sel)
         print("-"*45)
     else:
-        print("\n Error al conectar con Open-Meto. Verificar su conexion.")
+        print("\n Error al conectar con Open-Meteo. Verificar su conexion.")
+
+def buscar_localidad(lista_municipios):
+    """Encuentra una localidad por su nombre o por búsqueda aproximada."""
+    termino = input("\n ¿Qué localidad o zona deseas consultar?: ").strip().lower()
+
+    if not termino: 
+        print("\n Debe ingresar un texto válido para realizar la búsqueda.")
+        return 
+
+    coincidencias = []
+    for mun in lista_municipios:
+        for loc in mun.localidades:
+            if termino in loc.nombre.lower():
+                coincidencias.append(loc)
+
+    if not coincidencias:
+        print(f"\n No se encontraron localidades que coincidan con '{termino}' ")
+        return 
+
+    if len(coincidencias) == 1:
+        localidad_sel = coincidencias[0]
+    else:
+        print(f"\n Se encontraron {len(coincidencias)} coincidencias: ")
+        for idx, loc in enumerate(coincidencias, start= 1):
+            print(f"{idx}. {loc.nombre} ({loc.municipio_nombre})")
+        print("0. Cancelar")
+
+        opcion = input("\n Seleccione el número de la localidad que desea consultar: ")
+
+        if opcion == "0": 
+            return 
+
+        if not opcion.isdigit() or not (1 <= int(opcion) <= len(coincidencias)):
+            print("\n Selección inválida...Operación cancelada.")
+            return 
+
+        localidad_sel = coincidencias[int(opcion) - 1]
+
+    print(f"\n Consultando información para '{localidad_sel.nombre}'.....")
+
+    if not localidad_sel.tiene_coordenadas():
+        print(f"\n La localidad '{localidad_sel.nombre}' no tiene coordenadas registradas en el sistema.")
+        return 
+
+    if localidad_sel.consultar_clima():
+        print("\n" + "-"*45)
+        print("==== Reporte del clima en tiempo real ====")
+        print(localidad_sel)
+        print("-"*45)
+    else:
+        print("\n Error al conectar con Open-Meteo. Verificar su conexión.")
 
 if __name__ == "__main__":
     lista_municipios = cargar_datos_desde_json("areas.json")
@@ -106,7 +157,7 @@ if __name__ == "__main__":
         if opcion == "1":
             ejecutar_navegacion(lista_municipios)
         elif opcion == "2":
-            print("\n [Ruta 2: Búsqueda directa - En construcción....]")
+            buscar_localidad(lista_municipios)
         elif opcion == "3":
             print("\n [Ruta: Unidad de estadística - En construcción....]")
         elif opcion == "4":
