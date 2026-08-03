@@ -2,7 +2,7 @@ import json
 from datos import Municipio, Localidad
 
 def cargar_datos_desde_json(ruta_archivos):
-    """Lee el archivo JSON y convierte los datos en una estructura de objetos en memoria."""
+    ' Lee el archivo JSON y convierte los datos en una estructura de objetos en memoria. ' 
     municipios_lista = []
 
     with open(ruta_archivos, "r", encoding="utf-8") as archivo:
@@ -25,7 +25,7 @@ def cargar_datos_desde_json(ruta_archivos):
     return municipios_lista
 
 def menu_principal():
-    """ Despliega las opciones del equipo en la pantalla de comandos."""
+    ' Despliega las opciones del equipo en la pantalla de comandos. ' 
     print("\n" + "="*45)
     print("    Sistema MeteoCaracas - Menú principal")
     print("="*45)
@@ -37,7 +37,7 @@ def menu_principal():
     print("="*45)
 
 def ejecutar_navegacion(lista_municipios):
-    """Facilita la consulta del clima por municipio y localidad."""
+    ' Facilita la consulta del clima por municipio y localidad. '
     if not lista_municipios:
             print("\n no hay municipios cargados en el sistema.")
             return
@@ -96,7 +96,7 @@ def ejecutar_navegacion(lista_municipios):
         print("\n Error al conectar con Open-Meteo. Verificar su conexion.")
 
 def buscar_localidad(lista_municipios):
-    """Encuentra una localidad por su nombre o por búsqueda aproximada."""
+    ' Encuentra una localidad por su nombre o por búsqueda aproximada. ' 
     termino = input("\n ¿Qué localidad o zona deseas consultar?: ").strip().lower()
 
     if not termino: 
@@ -146,6 +146,38 @@ def buscar_localidad(lista_municipios):
     else:
         print("\n Error al conectar con Open-Meteo. Verificar su conexión.")
 
+def estadisticas(lista_municipios):
+    print("\n" + "="*45)
+    print(" Módulo de estadísticas y ranking ")
+    print("="*45)
+
+    todas_las_localidades = []
+    for mun in lista_municipios:
+        for loc in mun.localidades:
+            todas_las_localidades.append(loc)
+
+    print("\n 1.Localidades sin coordenadas registradas: ")
+    sin_coordenadas = []
+    for loc in todas_las_localidades:
+        if loc in todas_las_localidades():
+            sin_coordenadas.append(loc)
+
+    if len(sin_coordenadas) > 0:
+        for loc in sin_coordenadas:
+            print(f" - {loc.nombre} ({loc.municipio_nombre})")
+    else:
+        print("¡Todas las localidades tienen sus coordenadas registradas!.")
+
+    
+
+
+
+
+
+
+
+
+
 if __name__ == "__main__":
     lista_municipios = cargar_datos_desde_json("areas.json")
     print("Sistema MeteoCaracas iniciado con éxito")
@@ -167,3 +199,4 @@ if __name__ == "__main__":
             break
         else:
             print("\n Opción no válida. Por favor, introduzca un número del 0 al 4.")
+ 
