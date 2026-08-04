@@ -168,6 +168,32 @@ def estadisticas(lista_municipios):
     else:
         print("¡Todas las localidades tienen sus coordenadas registradas!.")
 
+    localidades_consultadas = []
+    for loc in todas_las_localidades:
+        if loc.clima is not NOne:
+            localidades_consultadas.append(loc)
+
+    print("\n 2.Ranking de temperatura (Mayor a Menor): ")
+    if len(localidades_consultadas) == 0:
+        print(" No se ha consultado el clima de ninguna localidad. ")
+        print(" Consulta algunas localidades en la Opción 1 o 2 por favor.")
+
+    else:
+        localidades_ordenadas = sorted(
+            localidades_consultadas,
+            key = lambda loc: loc.clima.temperatura,
+            rerverse= True 
+        )
+
+        posicion = 1 
+        for loc in localidades_ordenadas:
+            temp = loc.clima.temperatura
+            hum = loc.clima.humedad
+            viento = loc.clima.viento
+            print(f" {posicion}. {loc.nombre}: {temp}°C (Humedad: {hum} %, Viento: {viento} km/h)")
+            
+
+
     
 
 
