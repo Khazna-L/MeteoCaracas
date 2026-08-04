@@ -2,7 +2,7 @@ import json
 from datos import Municipio, Localidad
 
 def cargar_datos_desde_json(ruta_archivos):
-    ' Lee el archivo JSON y convierte los datos en una estructura de objetos en memoria. ' 
+    ''' Lee el archivo JSON y convierte los datos en una estructura de objetos en memoria. ''' 
     municipios_lista = []
 
     with open(ruta_archivos, "r", encoding="utf-8") as archivo:
@@ -25,7 +25,7 @@ def cargar_datos_desde_json(ruta_archivos):
     return municipios_lista
 
 def menu_principal():
-    ' Despliega las opciones del equipo en la pantalla de comandos. ' 
+    ''' Despliega las opciones del equipo en la pantalla de comandos. ''' 
     print("\n" + "="*45)
     print("    Sistema MeteoCaracas - Menú principal")
     print("="*45)
@@ -37,9 +37,9 @@ def menu_principal():
     print("="*45)
 
 def ejecutar_navegacion(lista_municipios):
-    ' Facilita la consulta del clima por municipio y localidad. '
+    ''' Facilita la consulta del clima por municipio y localidad. '''
     if not lista_municipios:
-            print("\n no hay municipios cargados en el sistema.")
+            print("\n No hay municipios cargados en el sistema.")
             return
 
     print("\n" + "="*45)
@@ -93,10 +93,10 @@ def ejecutar_navegacion(lista_municipios):
         print(localidad_sel)
         print("-"*45)
     else:
-        print("\n Error al conectar con Open-Meteo. Verificar su conexion.")
+        print("\n Error al conectar con Open-Meteo. Verificar su conexión.")
 
 def buscar_localidad(lista_municipios):
-    ' Encuentra una localidad por su nombre o por búsqueda aproximada. ' 
+    ''' Encuentra una localidad por su nombre o por búsqueda aproximada. '''
     termino = input("\n ¿Qué localidad o zona deseas consultar?: ").strip().lower()
 
     if not termino: 
@@ -147,6 +147,7 @@ def buscar_localidad(lista_municipios):
         print("\n Error al conectar con Open-Meteo. Verificar su conexión.")
 
 def estadisticas(lista_municipios):
+    ''' Muestra reportes seguros y ranking de temperatura de las localidades consultadas. '''
     print("\n" + "="*45)
     print(" Módulo de estadísticas y ranking ")
     print("="*45)
@@ -159,7 +160,7 @@ def estadisticas(lista_municipios):
     print("\n 1.Localidades sin coordenadas registradas: ")
     sin_coordenadas = []
     for loc in todas_las_localidades:
-        if loc in todas_las_localidades():
+        if not loc.tiene_coordenadas(): 
             sin_coordenadas.append(loc)
 
     if len(sin_coordenadas) > 0:
@@ -170,19 +171,18 @@ def estadisticas(lista_municipios):
 
     localidades_consultadas = []
     for loc in todas_las_localidades:
-        if loc.clima is not NOne:
+        if loc.clima is not None: 
             localidades_consultadas.append(loc)
 
     print("\n 2.Ranking de temperatura (Mayor a Menor): ")
     if len(localidades_consultadas) == 0:
         print(" No se ha consultado el clima de ninguna localidad. ")
         print(" Consulta algunas localidades en la Opción 1 o 2 por favor.")
-
     else:
         localidades_ordenadas = sorted(
             localidades_consultadas,
             key = lambda loc: loc.clima.temperatura,
-            rerverse= True 
+            reverse= True 
         )
 
         posicion = 1 
@@ -191,21 +191,14 @@ def estadisticas(lista_municipios):
             hum = loc.clima.humedad
             viento = loc.clima.viento
             print(f" {posicion}. {loc.nombre}: {temp}°C (Humedad: {hum} %, Viento: {viento} km/h)")
-            
-
-
-    
-
-
-
-
-
+            posicion += 1
 
 
 
 
 if __name__ == "__main__":
-    lista_municipios = cargar_datos_desde_json("areas.json")
+    lista_municipios = cargar_datos_desde_json("zonas_caracas.json")
+
     print("Sistema MeteoCaracas iniciado con éxito")
 
     while True:
@@ -217,7 +210,7 @@ if __name__ == "__main__":
         elif opcion == "2":
             buscar_localidad(lista_municipios)
         elif opcion == "3":
-            print("\n [Ruta: Unidad de estadística - En construcción....]")
+            estadisticas(lista_municipios)
         elif opcion == "4":
             print("\n [Ruta 4: Unidad histórico - En construcción....]")
         elif opcion == "0":

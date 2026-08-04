@@ -1,6 +1,6 @@
 import requests
 class RegistroClimatico:
-    ' Refleja los datos del clima al instante sobre una zona. '
+    ''' Refleja los datos del clima al instante sobre una zona. '''
     def __init__(self, temperatura, humedad, viento, codigo_wmo):
         self.temperatura = temperatura
         self.humedad = humedad
@@ -8,7 +8,7 @@ class RegistroClimatico:
         self.codigo_wmo = codigo_wmo
 
     def obtener_descripcion_wmo(self):
-        ' Transforma el código del clima de Open-Meteo a una descripción textual al español. '
+        ''' Transforma el código del clima de Open-Meteo a una descripción textual al español. '''
         codigos = {
         0: "Cielo despegado",
         1: "Principalmente despejado",
@@ -28,7 +28,7 @@ class RegistroClimatico:
         return f"Temp: {self.temperatura}°C, Humedad: {self.humedad}%, Viento: {self.viento} km/h, Estado: {estado}"
 
 class Localidad:
-    ' Muestra una localidad que forma parte de un municipio. '
+    ''' Muestra una localidad que forma parte de un municipio. '''
     def __init__(self, nombre, latitud, longitud, municipio_nombre=""):
         self.nombre = nombre 
         self.latitud = latitud 
@@ -37,11 +37,11 @@ class Localidad:
         self.municipio_nombre = municipio_nombre
 
     def tiene_coordenadas(self): 
-        ' Retorna verdadero si las coordenadas geográfricas son válidas. '
+        ''' Retorna verdadero si las coordenadas geográfricas son válidas. '''
         return self.latitud is not None and self.longitud is not None 
 
     def consultar_clima(self):
-        ' Hace la pregunta a la API de Open-Meteo para obtener el clima actual. '
+        ''' Hace la pregunta a la API de Open-Meteo para obtener el clima actual. '''
         if not self.tiene_coordenadas():
             return False
         
@@ -73,25 +73,13 @@ class Localidad:
         return f"{self.nombre} ({self.municipio_nombre})- {coords}"
 
 class Municipio: 
-     ' Muestra un municipio compuesto por diferentes localidades. '
+     ''' Muestra un municipio compuesto por diferentes localidades. '''
      def __init__(self, nombre):
           self.nombre = nombre 
           self.localidades = []
 
      def agregar_localidad(self, localidad):
-         ' Incorpora una localidad dentro de la lista municipal. ' 
+         ''' Incorpora una localidad dentro de la lista municipal. '''
          self.localidades.append(localidad)
 
 
-
-
-
-
-
-      
-            
-
-
-                      
-
-           
