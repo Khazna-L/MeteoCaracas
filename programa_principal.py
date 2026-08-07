@@ -194,7 +194,7 @@ def estadisticas(lista_municipios):
         for loc in mun.localidades:
             todas_las_localidades.append(loc)
 
-    print("\n 1.Localidades sin coordenadas registradas: ")
+    print("\n 1. Localidades sin coordenadas registradas: ")
     sin_coordenadas = []
     for loc in todas_las_localidades:
         if not loc.tiene_coordenadas(): 
@@ -211,16 +211,26 @@ def estadisticas(lista_municipios):
         if loc.clima is not None: 
             localidades_consultadas.append(loc)
 
-    print("\n 2.Ranking de temperatura (Mayor a Menor): ")
+    print("\n 2. Ranking de temperatura (Mayor a Menor): ")
     if len(localidades_consultadas) == 0:
         print(" No se ha consultado el clima de ninguna localidad. ")
         print(" Consulta algunas localidades en la Opción 1 o 2 por favor para generar las estadísticas.")
     else:
-        localidades_ordenadas = sorted(
-            localidades_consultadas,
-            key = lambda loc: loc.clima.temperatura,
-            reverse= True 
-        )
+        localidades_ordenadas = []
+        for loc in localidades_consultadas:
+            localidades_ordenadas.append(loc)
+
+            total_elementos = len(localidades_ordenadas)
+            if total_elementos > 1:
+                for i in range(total_elementos):
+                    for j in range(0, total_elementos - i - 1): 
+                        temp_actual = localidades_ordenadas[j].clima.temperatura
+                        temp_siguiente = localidades_ordenadas[j + 1].clima.temperatura
+
+                        if temp_actual < temp_siguiente:
+                            variable_temporal = localidades_ordenadas[j]
+                            localidades_ordenadas[j] = localidades_ordenadas[j + 1]
+                            localidades_ordenadas[j + 1] = variable_temporal
 
         posicion = 1 
         for loc in localidades_ordenadas:
@@ -231,20 +241,22 @@ def estadisticas(lista_municipios):
             posicion += 1
 
     print("\n 3. Reporte estadístico: ")
-    suma_temperaturas = 0
-    for loc in localidades_consultadas:
-        suma_temperaturas = suma_temperaturas + loc.clima.temperatura
 
-    promedio_temp = suma_temperaturas / len(localidades_consultadas)
+    if len(localidades_consultadas) == 0:
+        print("No se puede generar el reporte estadístico, no hay datos disponibles.")
+    else:
+        suma_temperaturas = 0
+        for loc in localidades_consultadas:
+            suma_temperaturas = suma_temperaturas + loc.clima.temperatura
 
-    mas_caluroso = localidades_ordenadas[0]
-    mas_frio = localidades_ordenadas[len(localidades_ordenadas) - 1]
+        promedio_temp = suma_temperaturas / len(localidades_consultadas)
 
-    print(f" --Temperatura ambiental promedio: {round(promedio_temp,2)}°C ")
-    print(f" --Zona más calurosa: {mas_caluroso.nombre} ({mas_caluroso.clima.temperatura}°C)")
-    print(f" --Zona más fría: {mas_frio.nombre} ({mas_frio.clima.temperatura}°C)")
+        mas_caluroso = localidades_ordenadas[0]
+        mas_frio = localidades_ordenadas[len(localidades_ordenadas) - 1]
 
-
+        print(f" --Temperatura ambiental promedio: {round(promedio_temp,2)}°C ")
+        print(f" --Zona más calurosa: {mas_caluroso.nombre} ({mas_caluroso.clima.temperatura}°C)")
+        print(f" --Zona más fría: {mas_frio.nombre} ({mas_frio.clima.temperatura}°C)")
 
 
 if __name__ == "__main__":
