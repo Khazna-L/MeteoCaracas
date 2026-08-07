@@ -61,8 +61,8 @@ class Localidad:
                     )
                     return True 
                 return False 
-        except Exception as e: 
-            print (f"¡Error de conexión al consultar! {self.nombre}: {e}")
+        except requests.exceptions.RequestException:
+            print (f"¡Error de conexión al consultar! {self.nombre}:") 
             return False 
         
     def __str__(self):
@@ -71,7 +71,6 @@ class Localidad:
 
         coords = f"Lat: {self.latitud}, Lon: {self.longitud}" if self.tiene_coordenadas() else "Sin coordenadas"
         return f"{self.nombre} ({self.municipio_nombre})- {coords}"
-
 class Municipio: 
      ''' Muestra un municipio compuesto por diferentes localidades. '''
      def __init__(self, nombre):
