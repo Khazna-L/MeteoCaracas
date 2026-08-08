@@ -71,6 +71,30 @@ class Localidad:
 
         coords = f"Lat: {self.latitud}, Lon: {self.longitud}" if self.tiene_coordenadas() else "Sin coordenadas"
         return f"{self.nombre} ({self.municipio_nombre})- {coords}"
+    
+    def consultar_historico(self, fecha_inicio, fecha_fin):
+        """Consulta datos historicos de Open-Meteo y retorna un DataFrame."""
+        if not self.tiene_coordenadas():
+            return none
+        url = "https://archive_api.open-meteo.com/v1/archive"
+        params = {
+            "latitude": self.latitud,
+            "longitude": self.longitud,
+            "start_date": fecha_inicio,
+            "end_date": fecha_fin,
+            "daily": "temperature_2m_mean,relative_humidity_2m_mean,precipitation_sum,wind_speed_10m_max"
+            "timezone": "auto
+        }
+        try:
+            respuesta = request.get(url, params=params, timeout=10)
+            if respuesta.status_code == 200:
+                datos = respuesta.json()["daily"]
+                df = pd.DataFrame(datos)
+                df[´time´] = pd.to.datetime(df[´time´])
+                return df
+        except Exceptiom as e:
+            print(f"Error de conexion:{e}")
+        return None
 class Municipio: 
      ''' Muestra un municipio compuesto por diferentes localidades. '''
      def __init__(self, nombre):
