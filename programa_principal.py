@@ -1,7 +1,6 @@
 import json
 from datos import Municipio, Localidad 
 import matplotlib.pyplot as plt
-import pandas as pd 
 
 def cargar_datos_desde_json(ruta_archivos):
     ''' Lee el archivo JSON y convierte los datos en una estructura de objetos en memoria. ''' 
@@ -286,12 +285,12 @@ def menu_4_historicos(lista_municipios):
         año_caluroso = promedios['temperature_2m_mean'].idxmax()
         año_lluvioso = promedios['precipitation_sum'].idxmax()
 
-        print(f"/n--- Resultados para {localidad_sel.nombre} ---")
+        print(f"\n--- Resultados para {localidad_sel.nombre} ---")
         print(f" Temperatura promedio general: {df['temperature_2m_mean'].mean():.2f} °C")
         print(f" Año más caluroso: {año_caluroso}")
         print(f" Año con más precipitaciones: {año_lluvioso}")
 
-        df.set_index('time')[['temperature_2m-mean', 'precipitation_sum']].plot(subplots= True)
+        df.set_index('time')[['temperature_2m_mean', 'precipitation_sum']].plot(subplots= True)
         plt.title(f" Evolución Historica - {localidad_sel.nombre}")
         plt.show()
     else:

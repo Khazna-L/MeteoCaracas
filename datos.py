@@ -91,7 +91,7 @@ class Localidad:
             if respuesta.status_code == 200:
                 datos = respuesta.json()["daily"]
                 df = pd.DataFrame(datos)
-                df['time'] = pd.to.datetime(df['time'])
+                df['time'] = pd.to_datetime(df['time'])
                 return df
         except Exception as e:
             print(f"Error de conexion:{e}")
