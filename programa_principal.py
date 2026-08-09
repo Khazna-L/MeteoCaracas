@@ -291,7 +291,7 @@ def menu_4_historicos(lista_municipios):
         print(f" Año más caluroso: {año_caluroso}")
         print(f" Año con más precipitaciones: {año_lluvioso}")
 
-        df.set_index('time')[['temperature_2m-mean', 'precipitation_sum']].plot(subplots= True)
+        df.set_index('time')[['temperature_2m_mean', 'precipitation_sum']].plot(subplots= True)
         plt.title(f" Evolución Historica - {localidad_sel.nombre}")
         plt.show()
     else:
