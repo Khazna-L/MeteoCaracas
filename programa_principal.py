@@ -1,7 +1,7 @@
 import json
-from datos import Municipio, Localidad
-import panda as pd
+from datos import Municipio, Localidad 
 import matplotlib.pyplot as plt
+import pandas as pd 
 
 def cargar_datos_desde_json(ruta_archivos):
     ''' Lee el archivo JSON y convierte los datos en una estructura de objetos en memoria. ''' 
@@ -260,21 +260,10 @@ def estadisticas(lista_municipios):
         print(f" --Zona más calurosa: {mas_caluroso.nombre} ({mas_caluroso.clima.temperatura}°C)")
         print(f" --Zona más fría: {mas_frio.nombre} ({mas_frio.clima.temperatura}°C)")
 
-
-if __name__ == "__main__":
-    lista_municipios = cargar_datos_desde_json("zonas_caracas.json")
-
-    observar_reportes_cargados(lista_municipios)
-
-    print(" ")
-    print("Sistema MeteoCaracas iniciado con éxito")
-    print(" ")
-
 def menu_4_historicos(lista_municipios):
-    print("/n--- Menu 4: ConsultavHistorica de Datos ---")
     nombre_busc = input("Ingrese el nombre de la localidad: ").strip().lower()
 
-    localidad-sel = None
+    localidad_sel = None
     for municipio in lista_municipios: 
         for loc in municipio.localidades:
             if loc.nombre.lower() == nombre_busc:
@@ -282,11 +271,11 @@ def menu_4_historicos(lista_municipios):
                 break
         if localidad_sel:
             break
-    if no localidad_sel:
-        print("localidad no encontrada".)
+    if not localidad_sel:
+        print("Localidad no encontrada.")
         return
-    f_inicio = input("Ingrese fecha de inicio ( AAAA-MM-DD): ")
-    f_fin = input("Ingrese fecha de fiin (AAAA-MM-DD): ")
+    f_inicio = input("Ingrese fecha de inicio (AAAA-MM-DD): ")
+    f_fin = input("Ingrese fecha de fin (AAAA-MM-DD): ")
 
     df = localidad_sel.consultar_historico(f_inicio, f_fin)
 
@@ -298,16 +287,24 @@ def menu_4_historicos(lista_municipios):
         año_lluvioso = promedios['precipitation_sum'].idxmax()
 
         print(f"/n--- Resultados para {localidad_sel.nombre} ---")
-        print(f"Temperatura promedio general: {df['temperature_2m_mean'].mean():.2f} °C")
-        print(f"Año mas caluroso: {año_caluroso}")
-        print(f"Año con mas precipitaciones: {año_lluvioso}")
+        print(f" Temperatura promedio general: {df['temperature_2m_mean'].mean():.2f} °C")
+        print(f" Año más caluroso: {año_caluroso}")
+        print(f" Año con más precipitaciones: {año_lluvioso}")
 
-    df.set_index('time')[['temperature_2m-mean', 'precipitation_sum']].plot(subplots=true)
-    plt.title(f"Evolucioon Historica - {localidad_sel.Nombre}")
-    plt.show()
-else:
-    print("No se pudieron obtener datos historicos o el rango de fechas es incorrecto")
-    
+        df.set_index('time')[['temperature_2m-mean', 'precipitation_sum']].plot(subplots= True)
+        plt.title(f" Evolución Historica - {localidad_sel.nombre}")
+        plt.show()
+    else:
+        print("No se pudieron obtener datos históricos o el rango de fechas es incorrecto.")
+
+
+if __name__ == "__main__":
+    lista_municipios = cargar_datos_desde_json("zonas_caracas.json")
+    observar_reportes_cargados(lista_municipios)
+
+    print(" ")
+    print("\n Sistema MeteoCaracas iniciado con éxito")
+    print(" ")
 
     while True:
         menu_principal()

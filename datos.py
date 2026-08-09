@@ -1,4 +1,6 @@
 import requests
+import pandas as pd 
+
 class RegistroClimatico:
     ''' Refleja los datos del clima al instante sobre una zona. '''
     def __init__(self, temperatura, humedad, viento, codigo_wmo):
@@ -45,8 +47,7 @@ class Localidad:
         if not self.tiene_coordenadas():
             return False
         
-        url = f"https://api.open-meteo.com/v1/forecast?latitude={self.latitud}&longitude={self.longitud}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code"
-
+        url = f"https://api.open-meteo.com/v1/forecast?latitude={self.latitud}&longitude={self.longitud}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code" 
         try:
             respuesta = requests.get(url, timeout=5)
             if respuesta.status_code == 200:
@@ -73,26 +74,26 @@ class Localidad:
         return f"{self.nombre} ({self.municipio_nombre})- {coords}"
     
     def consultar_historico(self, fecha_inicio, fecha_fin):
-        """Consulta datos historicos de Open-Meteo y retorna un DataFrame."""
+        ''' Consulta datos historicos de Open-Meteo y retorna un DataFrame.'''
         if not self.tiene_coordenadas():
-            return none
-        url = "https://archive_api.open-meteo.com/v1/archive"
+            return None
+        url = "https://archive-api.open-meteo.com/v1/archive"
         params = {
             "latitude": self.latitud,
             "longitude": self.longitud,
             "start_date": fecha_inicio,
             "end_date": fecha_fin,
-            "daily": "temperature_2m_mean,relative_humidity_2m_mean,precipitation_sum,wind_speed_10m_max"
-            "timezone": "auto
+            "daily": "temperature_2m_mean,relative_humidity_2m_mean,precipitation_sum,wind_speed_10m_max",
+            "timezone": "auto"
         }
         try:
-            respuesta = request.get(url, params=params, timeout=10)
+            respuesta = requests.get(url, params=params, timeout=10)
             if respuesta.status_code == 200:
                 datos = respuesta.json()["daily"]
                 df = pd.DataFrame(datos)
-                df[´time´] = pd.to.datetime(df[´time´])
+                df['time'] = pd.to.datetime(df['time'])
                 return df
-        except Exceptiom as e:
+        except Exception as e:
             print(f"Error de conexion:{e}")
         return None
 class Municipio: 
